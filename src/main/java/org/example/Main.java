@@ -60,7 +60,7 @@ public class Main {
     }
 
     private static String procesarDatos(String st, String plantilla) {
-        String salida = "";
+        String salida;
         String[] datos = st.split(",");
         Pattern patron = Pattern.compile("%%(\\d+)%%");
         Matcher matcher = patron.matcher(plantilla);
