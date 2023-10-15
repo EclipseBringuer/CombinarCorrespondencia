@@ -11,30 +11,43 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Correspondencia {
-    public static void combinarCorrespondencia(String template, String archivo){
+
+    public static void combinarCorrespondencia(String template, String archivo) {
+        comprobarCarpeta();
         String plantilla = leerPlantilla(template);
         ArrayList<String> datos = obtenerDatos(archivo);
 
+        int contador = 1;
+
         for (String st : datos) {
-            procesarDatos(st, plantilla);
+            if (st.split(",").length == 5) {
+                procesarDatos(st, plantilla);
+            } else {
+                System.out.println("Error, falta información en el archivo " + archivo + " en la linea " + contador);
+            }
+            contador++;
+        }
+    }
+
+    private static void comprobarCarpeta() {
+        File carpeta = new File("." + File.separator + "salida");
+        if (carpeta.exists()) {
+            File[] archivos = carpeta.listFiles();
+            if (archivos != null) {
+                for (File archivo : archivos) {
+                    archivo.delete();
+                }
+            }
+        } else {
+            carpeta.mkdir();
         }
     }
 
     private static void guardarSalida(String salida, String id) {
-        File carpeta = new File("." + File.separator + "salida");
-        if (!carpeta.exists()) {
-            carpeta.mkdir();
-            try (FileWriter fr = new FileWriter("." + File.separator + "salida" + File.separator + "template-" + id + ".txt")) {
-                fr.write(salida);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            try (FileWriter fr = new FileWriter("." + File.separator + "salida" + File.separator + "template-" + id + ".txt")) {
-                fr.write(salida);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        try (FileWriter fr = new FileWriter("." + File.separator + "salida" + File.separator + "template-" + id + ".txt")) {
+            fr.write(salida);
+        } catch (IOException e) {
+            throw new RuntimeException("Error al guardar el archivo");
         }
     }
 
@@ -43,7 +56,7 @@ public class Correspondencia {
         try {
             plantilla = Files.readString(Paths.get(archivo));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al leer la plantilla");
         }
         return plantilla;
     }
@@ -55,7 +68,7 @@ public class Correspondencia {
                 filas.add(sc.nextLine());
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al obtener los datos");
         }
         return filas;
     }
