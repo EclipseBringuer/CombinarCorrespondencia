@@ -10,7 +10,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CombinarCorrespondencia {
+public class Correspondencia {
     public static void combinarCorrespondencia(String template, String archivo){
         String plantilla = leerPlantilla(template);
         ArrayList<String> datos = obtenerDatos(archivo);
